@@ -16,6 +16,14 @@ app.config(['$routeProvider', '$httpProvider',
             	templateUrl: 'product-order-list.html',
             	controller: 'ProductOrderListController'
             }).
+            when('/productOrderDetail/:id', {
+            	templateUrl: 'product-order-detail.html',
+            	controller: 'ProductOrderDetailController'
+            }).
+            when('/productOrderUpdate/:id', {
+            	templateUrl: 'product-order-update.html',
+            	controller: 'ProductOrderUpdateController'
+            }).
             when('/productOrderAdd', {
             	templateUrl: 'product-order-add.html',
             	controller: 'ProductOrderAddController'
@@ -31,14 +39,22 @@ app.config(['$routeProvider', '$httpProvider',
     }
 ]);
 
-app.factory('authInterceptor', function ($q, $window, $location) {
+
+
+app.factory('authInterceptor', ['$q', '$window', '$location','$rootScope',function ($q, $window, $location,$rootScope) {
 	
     return {
         request: function (config) {
+        	
             if ($window.sessionStorage.access_token != 'undefined' && $window.sessionStorage.access_token != null) {
                 //HttpBearerAuth
                 config.headers.Authorization = 'Bearer ' + $window.sessionStorage.access_token;
                 var routeName =  $location.path() == '/' ? '/productOrderList' : $location.path();
+                $rootScope.loggedUser = {
+                		username:$window.sessionStorage.username,
+                		userid:$window.sessionStorage.userid,
+                		utype:$window.sessionStorage.type,
+                };
                 $location.path(routeName).replace();
                 return config;
             }
@@ -56,4 +72,4 @@ app.factory('authInterceptor', function ($q, $window, $location) {
             return $q.reject(rejection);
         }
     };
-});
+}]);

@@ -24,7 +24,7 @@ return [
 	        'rules' => [
 	            [
 	                'class' => 'yii\rest\UrlRule', 
-	                'controller' => ['v1/user','v1/productorder','v1/brands','v1/category'], 
+	                'controller' => ['v1/user','v1/productorder','v1/factory','v1/category'], 
 	                'pluralize'=>false	
 	            ],
 	        ],

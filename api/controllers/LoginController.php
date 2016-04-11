@@ -56,7 +56,7 @@ class LoginController extends Controller
         {
             return [
             	'id' => Yii::$app->user->identity->id,
-            	'email' => Yii::$app->user->identity->email,
+            	'type' => Yii::$app->user->identity->type,
             	'access_token' => Yii::$app->user->identity->getAuthKey(),  	
             ];
         }
@@ -70,7 +70,7 @@ class LoginController extends Controller
     public function actionAuth()
     {
         $response = [
-            'email' => Yii::$app->user->identity->email,
+            'type' => Yii::$app->user->identity->type,
             'access_token' => Yii::$app->user->identity->getAuthKey(),
         ];
 

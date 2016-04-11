@@ -31,13 +31,12 @@
 														<i class="icon-time bigger-110 hidden-480"></i>
 														计划交期
 														</th>
-														<th>
-															
+														<th>	
 															下单数量
 														</th>
 														<th class="hidden-480">状态</th>
 
-														<th></th>
+														<th>操作</th>
 													</tr>
 												</thead>
 
@@ -55,33 +54,36 @@
 															{{v.factory_zh_name}}
 														</td>
 														<td class="hidden-480">{{v.product_model}}</td>
-														<td>{{v.order_time}}</td>
+														<td>{{v.order_time*1000 | date:'yyyy-MM-dd'}}</td>
 
-														<td>{{v.plan_delivery_time}}</td>
+														<td>
+															<span ng-if="v.plan_delivery_time">
+															{{v.plan_delivery_time*1000 | date:'yyyy-MM-dd'}}
+															</span>
+															
+														</td>
 														<td>
 															{{v.number}}
 														</td>
 														<td class="hidden-480">
-															<span class="label label-sm label-warning">Expiring</span>
+															<span class="label label-sm label-warning" ng-if="v.status=='ordered'">已下单</span>
+															<span class="label label-sm label-warning" ng-if="v.status=='waitreply'">待回复</span>
+															<span class="label label-sm label-warning" ng-if="v.status=='close'">已关闭</span>
+															<span class="label label-sm label-warning" ng-if="v.status=='complete'">已完成</span>
 														</td>
 
 														<td>
 															<div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
-																<button class="btn btn-xs btn-success">
-																	<i class="icon-ok bigger-120"></i>
-																</button>
-
-																<button class="btn btn-xs btn-info">
+															
+																<!-- <a class="btn btn-xs btn-warning" ng-href="#productOrderUpdate/{{v.id}}">
 																	<i class="icon-edit bigger-120"></i>
-																</button>
+																</a> -->
 
-																<button class="btn btn-xs btn-danger">
-																	<i class="icon-trash bigger-120"></i>
-																</button>
-
-																<button class="btn btn-xs btn-warning">
-																	<i class="icon-flag bigger-120"></i>
-																</button>
+																<a class="btn btn-xs btn-info" ng-href="#productOrderDetail/{{v.id}}">
+																	<i class="icon-eye-open bigger-120"></i>
+																</a>
+																
+																
 															</div>
 
 															<div class="visible-xs visible-sm hidden-md hidden-lg">

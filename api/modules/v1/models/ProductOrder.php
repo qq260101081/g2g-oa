@@ -35,8 +35,13 @@ class ProductOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_model', 'number'], 'required'],
-            
+            [['product_model','number','factory_zh_name','order_time'], 'required'],
+        	[['jet_coding','factory_zh_name','factory_en_name','lamp_bead_code','remark'],'string'],
+        	[['price'],'number'],
+        	[['plan_delivery_time','order_time'], 'safe'],
+        	['status', 'filter','filter'=>function ($value){if($value=='') return 'waitreply';return $value;}],
+        	['created_at', 'default','value'=>time()],
+        	
         ];
     }
 
