@@ -23,10 +23,50 @@ app.config(['$routeProvider', '$httpProvider',
             when('/productOrderUpdate/:id', {
             	templateUrl: 'product-order-update.html',
             	controller: 'ProductOrderUpdateController'
-            }).
+            }).           
             when('/productOrderAdd', {
             	templateUrl: 'product-order-add.html',
             	controller: 'ProductOrderAddController'
+            }).
+            when('/lampbeadList', {
+            	templateUrl: 'lampbead-list.html',
+            	controller: 'LampbeadListController'
+            }).
+            when('/lampbeadDetail/:id', {
+            	templateUrl: 'lampbead-detail.html',
+            	controller: 'LampbeadDetailController'
+            }).
+            when('/lampbeadAdd', {
+            	templateUrl: 'lampbead-add.html',
+            	controller: 'LampbeadAddController'
+            }).
+            when('/lampbeadUpdate/:id', {
+            	templateUrl: 'lampbead-update.html',
+            	controller: 'LampbeadUpdateController'
+            }).
+            when('/repertoryList', {
+            	templateUrl: 'repertory-list.html',
+            	controller: 'RepertoryListController'
+            }).
+            when('/shippingList', {
+            	templateUrl: 'shipping-list.html',
+            	controller: 'ShippingListController'
+            }).
+            when('/shippingAdd', {
+            	templateUrl: 'shipping-add.html',
+            	controller: 'ShippingAddController'
+            }).
+            when('/userUpdate/:uid', {
+            	templateUrl: 'user-update.html',
+            	controller: 'UserUpdateController'
+            }).
+            when('/userList', {
+            	templateUrl: 'user-list.html',
+            	controller: 'UserListController'
+            }).
+            when('/userAdd', {
+            	templateUrl: 'user-add.html',
+            	controller: 'UserAddController'
             }).
             when('/login', {
                 templateUrl: 'login.html',

@@ -1,7 +1,7 @@
-<div class="page-content" ng-controller="ProductOrderListController">
+<div class="page-content" ng-controller="ShippingListController">
 						<div class="page-header">
 							<h1>
-								产品下单列表
+								出货单列表
 							</h1>
 						</div><!-- /.page-header -->
 
@@ -21,28 +21,31 @@
 																<span class="lbl"></span>
 															</label>
 														</th>
-														<th>生产工厂</th>
-														<th>产品型号</th>
-														<th class="hidden-480">
-															<i class="icon-time bigger-110 hidden-480"></i>
-															下单日期
-														</th>
-														<th>
-														<i class="icon-time bigger-110 hidden-480"></i>
-														计划交期
+														<th>产品名称</th>
+														
+														<th>	
+															出货数量
 														</th>
 														<th>	
-															下单数量
+															运输类型
 														</th>
-														<th class="hidden-480">状态</th>
-
+														<th>	
+															状态
+														</th>
+														<th>	
+															出货人
+														</th>
+														<th class="hidden-480">
+															<i class="icon-time bigger-110 hidden-480"></i>
+															入库时间
+														</th>
 														<th>操作</th>
 													</tr>
 												</thead>
 
 												<tbody>
 												
-													<tr ng-repeat="v in orders">
+													<tr ng-repeat="v in shipping">
 														<td class="center">
 															<label>
 																<input type="checkbox" class="ace">
@@ -50,68 +53,30 @@
 															</label>
 														</td>
 
-														<td>
-															{{v.factory_zh_name}}
-														</td>
-														<td class="hidden-480">{{v.product_model}}</td>
-														<td>{{v.order_time*1000 | date:'yyyy-MM-dd'}}</td>
-
-														<td>
-															<span ng-if="v.plan_delivery_time">
-															{{v.plan_delivery_time*1000 | date:'yyyy-MM-dd'}}
-															</span>
-															
-														</td>
+														<td class="hidden-480">{{v.product_name}}</td>
 														<td>
 															{{v.number}}
 														</td>
-														<td class="hidden-480">
-															<span class="label label-sm label-warning" ng-if="v.status=='ordered'">已下单</span>
-															<span class="label label-sm label-warning" ng-if="v.status=='waitreply'">待回复</span>
-															<span class="label label-sm label-warning" ng-if="v.status=='replied'">有回复</span>
-															<span class="label label-sm label-warning" ng-if="v.status=='close'">已关闭</span>
-															<span class="label label-sm label-warning" ng-if="v.status=='complete'">已完成</span>
-														</td>
-
 														<td>
-															<div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
-															
-																<!-- <a class="btn btn-xs btn-warning" ng-href="#productOrderUpdate/{{v.id}}">
-																	<i class="icon-edit bigger-120"></i>
-																</a> -->
-
-																<a class="btn btn-xs btn-info" ng-href="#productOrderDetail/{{v.id}}">
-																	<i class="icon-eye-open bigger-120"></i>
-																</a>
-																
-												<button class="btn btn-inverse btn-xs dropdown-toggle" data-toggle="dropdown" ng-if="v.status=='ordered'">
-													进度
-													<span class="icon-caret-down icon-on-right"></span>
-												</button>
-
-												<ul class="dropdown-menu dropdown-info pull-right">
-													<li>
-														<a href=""  ng-click="productOrderProgress(v.id,'material')"> <font ng-if="v.material" color="green"><b>√ </b></font> 原料全部到位</a>
-													</li>
-													<li>
-														<a href="" ng-click="productOrderProgress(v.id,'production')"> <font ng-if="v.production" color="green"><b>√ </b></font> 上线生产中</a>
-													</li>
-													<li>
-														<a href="" ng-click="productOrderProgress(v.id,'aging')"> <font ng-if="v.aging" color="green"><b>√ </b></font> 老化</a>
-													</li>
-													<li>
-														<a href="" ng-click="productOrderProgress(v.id,'inspection')"> <font ng-if="v.inspection" color="green"><b>√ </b></font> 送客户验收中</a>
-													</li>
-													<li>
-														<a href="" ng-click="productOrderProgress(v.id,'storage')"> <font ng-if="v.storage" color="green"><b>√ </b></font> 准备入库</a>
-													</li>
-													<!-- <li class="divider"></li>
-
-													<li>
-														<a href="#">完成</a>
-													</li> -->
-												</ul>
-																
+															<span ng-if="v.shipping_type=='sea'">海运</span>   
+															<span ng-if="v.shipping_type=='skylift'">空运</span>   
+														</td>
+														<td>
+															<span ng-if="!v.status">&nbsp;</span>   
+															<span ng-if="v.status=='check'" style="color:green;">check</span>
+														</td>
+														<td>
+															{{v.username}}
+														</td>
+														
+														<td>{{v.created_at*1000 | date:'yyyy-MM-dd'}}</td>
+														
+														<td>
+															<div ng-if="!v.status" class="visible-md visible-lg hidden-sm hidden-xs btn-group">
+																<button class="btn btn-xs btn-success" ng-click="changeStatus(v.id,'check')">
+																	<i class="icon-ok"></i>
+																	通过
+																</button>
 															</div>
 
 															<div class="visible-xs visible-sm hidden-md hidden-lg">

@@ -10,6 +10,7 @@ $config = [
             ],
         ],
     ],
+	'language' => 'zh-CN',
 ];
 
 if (!YII_ENV_TEST) {

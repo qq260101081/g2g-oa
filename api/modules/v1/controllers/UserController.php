@@ -12,9 +12,7 @@ class UserController extends BaseController
 	public function actions()
 	{
 		$actions = parent::actions();
-		// 注销系统自带的实现方法
-		//unset($actions['index'], $actions['update'], $actions['create'], $actions['delete'], $actions['view']);
-		unset($actions['create']);
+		unset($actions['index'], $actions['update'], $actions['create'], $actions['delete'], $actions['view']);
 		return $actions;
 	}
 	
@@ -24,24 +22,20 @@ class UserController extends BaseController
 		$model->load(Yii::$app->getRequest()->getBodyParams(), '');
 		$model->password_hash = Yii::$app->security->generatePasswordHash(Yii::$app->getRequest()->getBodyParams()['password']);	
 		$model->auth_key = Yii::$app->security->generateRandomString();
-		
 		if (!$model->save())
 		{
-			return $model->getFirstErrors()[0];
+			Yii::$app->response->statusCode = 400;
 		}
 		return $model;
 	}
 	
 	
-	/* 
+	
 	public function actionIndex()
 	{
 		$modelClass = $this->modelClass;
-		$query = $modelClass::find();
+		return $modelClass::find()->all();
 		
-		return new ActiveDataProvider([
-				'query' => $query
-		]);
 	}
 	
 	
@@ -49,7 +43,13 @@ class UserController extends BaseController
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
-		$model->attributes = Yii::$app->request->post();
+		$data = Yii::$app->request->post();
+		if(isset($data['password']))
+		{
+			$data['password_hash'] = Yii::$app->security->generatePasswordHash($data['password']);
+			unset($data['password']);
+		}
+		$model->attributes = $data;
 		if (!$model->save()) 
 		{
 			return $model->getFirstErrors()[0];
@@ -79,10 +79,10 @@ class UserController extends BaseController
 	
 	public function checkAccess($action, $model = null, $params = [])
 	{
-		// 检查用户能否访问 $action 和 $model
-		// 访问被拒绝应抛出ForbiddenHttpException
+		// 锟斤拷锟斤拷没锟斤拷芊锟斤拷锟斤拷 $action 锟斤拷 $model
+		// 锟斤拷锟绞憋拷锟杰撅拷应锟阶筹拷ForbiddenHttpException
 		// var_dump($params);exit;
-	} */
+	}
 	
    
 }

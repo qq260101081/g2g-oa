@@ -4,6 +4,7 @@ use Yii;
 use api\controllers\BaseController;
 use api\modules\v1\models\ProductOrder;
 use api\modules\v1\models\User;
+use api\modules\v1\models\Repertory;
 
 class ProductorderController extends BaseController
 {
@@ -12,8 +13,23 @@ class ProductorderController extends BaseController
 	public function actions()
 	{
 		$actions = parent::actions();
-		unset($actions['create'],$actions['view'],$actions['delete'],$actions['update']);
+		unset($actions['create'],$actions['index'],$actions['view'],$actions['delete'],$actions['update']);
 		return $actions;
+	}
+	
+	public function actionIndex()
+	{
+		//工厂只能看到自己的订单
+		if(Yii::$app->user->identity->type == 'factory')
+		{
+			$model = ProductOrder::find()->where(['factory_en_name'=>Yii::$app->user->identity->belong])->orderBy('id desc')->all();
+		}
+		else 
+		{
+			$model = ProductOrder::find()->orderBy('id desc')->all();
+		}
+		
+		return $model;
 	}
 	
 	public function actionView($id)
@@ -29,7 +45,7 @@ class ProductorderController extends BaseController
 	public function actionCreate()
 	{
 		$p = 1;
-		$orderNo = ProductOrder::find()->select('order_no')->where(['<','created_at',strtotime("today")+86400])->one();
+		$orderNo = ProductOrder::find()->select('order_no')->where(['>','created_at',strtotime("today")])->orderBy('id desc')->one();
 		if($orderNo)
 		{
 			$p = explode('-', $orderNo->order_no)[1]+1;
@@ -47,14 +63,83 @@ class ProductorderController extends BaseController
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
-		if($model->factory_plan_delivery_time < 1)
-			$model->factory_plan_delivery_time = (isset(Yii::$app->request->post()['factory_plan_delivery_time'])&&Yii::$app->request->post()['factory_plan_delivery_time'])?strtotime(Yii::$app->request->post()['factory_plan_delivery_time']):0;		
-		if(!$model->factory_remark)
-			$model->factory_remark = isset(Yii::$app->request->post()['factory_remark']) ? Yii::$app->request->post()['factory_remark']:'';
 		
-		if((!isset(Yii::$app->request->post()['factory_plan_delivery_time']) && (!isset(Yii::$app->request->post()['factory_remark']))))
+		if(isset(Yii::$app->request->post()['progress']))
+		{
+			if(!$model->progress) 
+			{
+				$model->progress = Yii::$app->request->post()['progress'];
+			}
+			else 
+			{
+				$arr = [];
+				foreach (explode('-', $model->progress) as $v) {
+					$arr[$v] = $v;
+				}
+				if(isset($arr[Yii::$app->request->post()['progress']])) 
+					unset($arr[Yii::$app->request->post()['progress']]);
+				else
+					$arr[Yii::$app->request->post()['progress']] = Yii::$app->request->post()['progress'];
+				$model->progress = implode('-', $arr);
+			}
+			$model->save();
+			return $model;
+			
+		}
+		elseif (isset(Yii::$app->request->post()['repcheck']))
+		{
+			if(Yii::$app->user->identity->type == 'g2g') 
+			{
+				$model->status = Yii::$app->request->post()['status'];
+				if(Yii::$app->request->post()['status'] == 'complete')
+				{
+					//入库
+					$repertoryModel = new Repertory();
+					$repertoryModel->user_id = Yii::$app->user->identity->id;
+					$repertoryModel->product_order_id = $model->id;
+					$repertoryModel->number = $model->number;
+					$repertoryModel->product_type = 'product';
+					$repertoryModel->order_no = $model->order_no;
+					$repertoryModel->price = $model->price;
+					$repertoryModel->product_name = $model->product_model;
+					if($repertoryModel->save())
+					{
+						$model->save();
+					}
+					
+				}
+				else
+				{
+					$model->save();
+				}
+				return $model;
+			}
+			
+		}
+		else
+		{
+			$data = Yii::$app->request->post();
 			$model->status = 'ordered';
-		$model->save();
+			
+			if($model->factory_plan_delivery_time == 0)
+			{
+				if(isset($data['factory_plan_delivery_time']) && $data['factory_plan_delivery_time'])
+				{
+					$model->status = 'replied';
+					$model->factory_plan_delivery_time = strtotime($data['factory_plan_delivery_time']);
+				}
+			}
+			if(!$model->factory_remark)
+			{
+				if(isset($data['factory_remark'])) 
+				{
+					$model->status = 'replied';
+					$model->factory_remark = $data['factory_remark'];
+				}	
+			}
+			
+			$model->save();
+		}
 	}
 	
 	/* function to find the requested record/model */

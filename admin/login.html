@@ -1,4 +1,4 @@
-﻿<div class="main-container">
+﻿<div class="main-container" ng-controller="LoginController">
 			<div class="main-content">
 				<div class="row">
 					<div class="col-sm-10 col-sm-offset-1">
@@ -44,7 +44,7 @@
 													</label>
 
 													<div class="space"></div>
-
+													<div ng-if="error" style="color:red;">{{error}}</div>
 													<div class="clearfix">
 														<label class="inline">
 															<input type="checkbox" class="ace" />
