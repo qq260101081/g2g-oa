@@ -6,6 +6,7 @@ use api\modules\v1\models\Shipping;
 use api\modules\v1\models\User;
 use yii\filters\auth\HttpBasicAuth;
 use api\modules\v1\models\Repertory;
+use yii\data\ActiveDataProvider;
 
 class ShippingController extends BaseController
 {
@@ -20,16 +21,28 @@ class ShippingController extends BaseController
 		return $actions;
 	}
 	
-	public function actionIndex()
+public function actionIndex($page, $pageSize)
 	{
-		$model = Shipping::find()->asArray()->all();
-	
-		foreach ($model as $k => $v)
+		$model = $this->modelClass;
+		$query = $model::find();
+		$dataProvider = new ActiveDataProvider([
+				'query' => $query->joinWith(['user'])->orderBy('id desc'),
+				'pagination' => [
+						'pageSize' => $pageSize,
+				],
+		]);
+		
+		$data = [];
+		
+		foreach ($dataProvider->models as $k => $v)
 		{
-			$model[$k]['username'] = User::findOne($v['user_id'])->username;
+			$data['data'][$k] = $v->attributes;
+			$data['data'][$k]['username'] = $v['user']['username'];
 		}
-	
-		return $model;
+		$data['pages']['total_count'] = $dataProvider->pagination->totalCount;
+		Yii::$app->response->data = $data;
+		
+		return $data;
 	}
 	
 	public function actionView($id)

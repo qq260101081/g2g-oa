@@ -2,37 +2,47 @@
 namespace api\modules\v1\controllers;
 use Yii;
 use api\controllers\BaseController;
-use api\modules\v1\models\Lampbead;
+use api\modules\v1\models\IcCategory;
 use api\modules\v1\models\User;
 use yii\filters\auth\HttpBasicAuth;
 use yii\data\ActiveDataProvider;
+use api\modules\v1\models\Ic;
 
-class LampbeadController extends BaseController
+class IcCategoryController extends BaseController
 {
-	public $modelClass = 'api\modules\v1\models\Lampbead';
-	
-	
+	public $modelClass = 'api\modules\v1\models\IcCategory';
 	
 	public function actions()
 	{
 		$actions = parent::actions();
-		unset($actions['index'],$actions['create'],$actions['view'],$actions['delete'],$actions['update']);
+		unset($actions['index'],$actions['create'],$actions['view'],$actions['update']);
 		return $actions;
 	}
 	
-	public function actionIndex($page=0, $pageSize=0, $where='')
+	public function actionIndex($page=0, $pageSize=0)
 	{
-		//获取有库存的灯珠
-		if($where=='repertory' && $page==0 && $page==0)
+		if(!$page || !$pageSize)
 		{
-			return Lampbead::find()->where(['>','remaining',0])->all();
+			$ics = IcCategory::find()->all();
+			foreach ($ics as $k=>$v)
+			{
+				$ic = Ic::find()->where(['ic_name'=>$v->name])->all();
+				if($ic)
+					$ics[$k]->number = $ic->remaining;
+				else 
+					$ics[$k]->number = 0;
+			}
+			return $ics;
 		}
-		return new ActiveDataProvider([
-				'query' => Lampbead::find()->orderBy('id desc'),
-				'pagination' => [
-						'pageSize' => $pageSize,
-				],
-		]);
+		else 
+		{
+			return new ActiveDataProvider([
+					'query' => IcCategory::find()->orderBy('id desc'),
+					'pagination' => [
+							'pageSize' => $pageSize,
+					],
+			]);
+		}
 	}
 	
 	public function actionView($id)
@@ -47,12 +57,8 @@ class LampbeadController extends BaseController
 	}
 	public function actionCreate()
 	{
-			
 		$model = new $this->modelClass;
 		$model->attributes = Yii::$app->request->post();
-		$model->order_no = 'G2G' . date('Ymd') . $model->attributes['order_no'];
-		$model->username = Yii::$app->user->identity->username;
-		$model->remaining = $model->attributes['number'];
 		$model->save();
 	}
 	
@@ -72,7 +78,7 @@ class LampbeadController extends BaseController
 	/* function to find the requested record/model */
 	protected function findModel($id)
 	{
-		if (($model = Lampbead::findOne($id)) !== null) {
+		if (($model = IcCategory::findOne($id)) !== null) {
 			return $model;
 		} else {
 	

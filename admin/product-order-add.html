@@ -13,20 +13,23 @@
 				
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-right" for="form-field-2"><i class="icon-asterisk red"></i> 产品型号 </label>
-
-						<div class="col-xs-12 col-sm-8">
-        
-					        <select ng-init="name=productModel[0]" ng-options="v.name for v in productModel" ng-change="selectProductModel(name)" ng-model="name" class="col-xs-10 col-sm-5">
+						<div class="col-sm-9">
+					        <select required ng-options="v.product_name as v.product_name for v in productModel" ng-change="selectProductModel(order.product_model)" ng-model="order.product_model" class="col-xs-10 col-sm-5">
+      							<option value="" selected>--请选择产品型号--</option>
       						</select>
-					        
 						</div>
 					</div>
+					
 					<div class="space-4"></div>
 					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <i class="icon-asterisk red"></i>灯珠编号 </label>
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <i class="icon-asterisk red"></i>灯珠 </label>
 
 						<div class="col-sm-9">
-							<input required type="text" ng-model="order.lamp_bead_code" id="form-field-1" class="col-xs-10 col-sm-5" />
+						
+							<select required ng-options="v.order_no as v.order_no for v in lampbead" ng-change="selectLampbead(order.lamp_bead_code)" ng-model="order.lamp_bead_code" class="col-xs-10 col-sm-5">
+      							<option value="" selected>--请选择灯珠--</option>
+      						</select>
+      						
 						</div>
 					</div>
 									
@@ -36,7 +39,8 @@
 
 						<div class="col-sm-9">
 							
-							<select ng-init="zh_name=fatores[0]" ng-options="v.zh_name for v in fatores" ng-change="selectFatory(zh_name)" ng-model="zh_name" class="col-xs-10 col-sm-5">
+							<select required ng-options="v.zh_name as v.zh_name for v in fatores" ng-change="selectFatory(order.factory_name)" ng-model="order.factory_name" class="col-xs-10 col-sm-5">
+      							<option value="" selected>--请选择工厂--</option>
       						</select>
 						</div>
 					</div>

@@ -21,6 +21,10 @@ class Shipping extends \yii\db\ActiveRecord
         return 'shipping_logs';
     }
 
+    public function getUser()
+    {
+    	return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
     /**
      * @inheritdoc
      */

@@ -2,7 +2,8 @@
 
 var app = angular.module('app', [
     'ngRoute',          //$routeProvider
-    'controllers'       //Our module frontend/web/js/controllers.js
+    'controllers',      //Our module frontend/web/js/controllers.js
+    'tm.pagination'
 ]);
 
 app.config(['$routeProvider', '$httpProvider',
@@ -28,6 +29,14 @@ app.config(['$routeProvider', '$httpProvider',
             	templateUrl: 'product-order-add.html',
             	controller: 'ProductOrderAddController'
             }).
+            when('/icCategoryList', {
+            	templateUrl: 'ic-category-list.html',
+            	controller: 'IcCategoryListController'
+            }).
+            when('/icCategoryAdd', {
+            	templateUrl: 'ic-category-add.html',
+            	controller: 'IcCategoryAddController'
+            }).
             when('/lampbeadList', {
             	templateUrl: 'lampbead-list.html',
             	controller: 'LampbeadListController'
@@ -44,6 +53,22 @@ app.config(['$routeProvider', '$httpProvider',
             	templateUrl: 'lampbead-update.html',
             	controller: 'LampbeadUpdateController'
             }).
+            when('/lampbeadShippingList', {
+            	templateUrl: 'lampbead-shipping-list.html',
+            	controller: 'LampbeadShippingListController'
+            }).
+            when('/icList', {
+            	templateUrl: 'ic-list.html',
+            	controller: 'IcListController'
+            }).
+            when('/icAdd', {
+            	templateUrl: 'ic-add.html',
+            	controller: 'IcAddController'
+            }).
+            when('/icLogs', {
+            	templateUrl: 'ic-logs.html',
+            	controller: 'IcLogsController'
+            }).
             when('/repertoryList', {
             	templateUrl: 'repertory-list.html',
             	controller: 'RepertoryListController'
@@ -55,6 +80,14 @@ app.config(['$routeProvider', '$httpProvider',
             when('/shippingAdd', {
             	templateUrl: 'shipping-add.html',
             	controller: 'ShippingAddController'
+            }).
+            when('/productModelList', {
+            	templateUrl: 'product-model-list.html',
+            	controller: 'ProductModelListController'
+            }).
+            when('/productModelAdd', {
+            	templateUrl: 'product-model-add.html',
+            	controller: 'ProductModelAddController'
             }).
             when('/userUpdate/:uid', {
             	templateUrl: 'user-update.html',

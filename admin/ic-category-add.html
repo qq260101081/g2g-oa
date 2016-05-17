@@ -1,207 +1,45 @@
-<div class="page-content" ng-controller="ProductOrderDetailController">
-	<div class="page-header">
-		<h1>
-			产品订单详情表
-		</h1>
-	</div><!-- /.page-header -->
-	
-	<div class="row">
-		<form role="form" ng-submit="factoryReply()">
-		<div class="profile-user-info profile-user-info-striped">
-			<div class="profile-info-row">
-				<div class="profile-info-name"> ID </div>
+<div class="page-content" ng-controller="IcCategoryAddController">
+		<div class="page-header">
+			<h1>
+				IC分类添加
+			</h1>
+		</div><!-- /.page-header -->
+						
+		<div class="row">
+			<div class="col-xs-12">
+				<!-- PAGE CONTENT BEGINS -->
 
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="username">{{order.id}}</span>
-				</div>
-			</div>
-
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 生产工厂 </div>
-
-				<div class="profile-info-value">
-					<i class="icon-map-marker light-orange bigger-110"></i>
-					<span class="editable editable-click" id="country">{{order.factory_name}}</span>
-				</div>
-			</div>
-
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 灯珠编号 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="age">{{order.lamp_bead_code}}</span>
-				</div>
-			</div>
-			
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 产品模型 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="age">{{order.product_model}}</span>
-				</div>
-			</div>
-			
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 下单时间 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="signup">{{order.order_time*1000 | date:'yyyy-MM-dd'}}</span>
-				</div>
-			</div>
-			
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 计划交期 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" ng-if="order.plan_delivery_time">{{order.plan_delivery_time*1000 | date:'yyyy-MM-dd'}}</span>
-					<span class="editable editable-click" ng-if="order.plan_delivery_time==0">&nbsp;</span>
-				</div>
-			</div>
-
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 订单号 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="login">{{order.order_no}}</span>
-				</div>
-			</div>
-			
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 下单数量 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="login">{{order.number}}</span>
-				</div>
-			</div>
-		
-
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 单价 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="about">{{order.price}}</span>
-				</div>
-			</div>
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 喷码内容 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" ng-if="order.jet_coding">{{order.jet_coding}}</span>
-					<span class="editable editable-click" ng-if="order.jet_coding==NULL">&nbsp;</span>
-				</div>
-			</div>
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 订单状态 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click label-warning" ng-if="order.status=='ordered'">已下单</span>
-					<span class="editable editable-click label-warning" ng-if="order.status=='waitreply'">待回复</span>
-					<span class="editable editable-click label-warning" ng-if="order.status=='replied'">有回复</span>
-					<span class="editable editable-click label-warning" ng-if="order.status=='close'">已关闭</span>
-					<span class="editable editable-click label-warning" ng-if="order.status=='complete'">已完成</span>
-				</div>
-			</div>
-
-			<div class="profile-info-row" ng-if="order.plan_delivery_time&&order.real_delivery_at">
-				<div class="profile-info-name"> 如期完成 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" ng-if="order.plan_delivery_time<order.real_delivery_at">延期</span>
-					<span class="editable editable-click" ng-if="order.plan_delivery_time>order.real_delivery_at">如期</span>
-				</div>
-			</div>
-			<div class="profile-info-row" ng-if="order.order_close_at">
-				<div class="profile-info-name"> 订单关闭时间 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="about">{{order.order_close_at*1000 | date:'yyyy-MM-dd'}}</span>
-				</div>
-			</div>
-			<div class="profile-info-row" ng-if="order.close_remark">
-				<div class="profile-info-name"> 订单关闭备注 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="about">{{order.close_remark}}</span>
-				</div>
-			</div>
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 下单人 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="about">{{order.username}}</span>
-				</div>
-			</div>
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 订单创建时间 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" id="about">{{order.created_at*1000 | date:'yyyy-MM-dd'}}</span>
-				</div>
-			</div>
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 备注 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" ng-if="order.remark">{{order.remark}}</span>
-					<span class="editable editable-click" ng-if="!order.remark">&nbsp;</span>
-				</div>
-			</div>
-			
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 厂方计划交期 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" ng-show="order.state!='waitreply' && order.factory_plan_delivery_time>0"> {{order.factory_plan_delivery_time*1000|date:'yyyy-MM-dd'}}</span>					
-					<input type="text" ng-show="order.state=='waitreply'" ng-model="neworder.factory_plan_delivery_time" data-date-format="yyyy-mm-dd" class="date-picker">
-					<i>&nbsp;</i>
-				</div>
-			</div>
-			<div class="profile-info-row">
-				<div class="profile-info-name"> 厂方备注 </div>
-
-				<div class="profile-info-value">
-					<span class="editable editable-click" ng-show="order.state!='waitreply'">{{order.factory_remark}}</span>					
-					<textarea ng-show="order.state=='waitreply'" ng-model="neworder.factory_remark" cols="120" type="text" /></textarea>
-					<i>&nbsp;</i>
-				</div>
-			</div>
-			
-		</div>
-		
-		<div class="clearfix form-actions" ng-if="order.state=='waitreply' && loggedUser.utype=='factory'">
-			<div class="col-md-offset-3 col-md-9">
-				<button class="btn btn-info" type="submit" ng-disabled="form.$invalid">
-					<i class="icon-ok bigger-110"></i>
-					提交
-				</button>
-			</div>
-		</div>
-		
-		<div class="clearfix form-actions" ng-if="loggedUser.utype=='g2g' && order.state=='replied'">
-			<div class="col-md-offset-3 col-md-9">
-				<button class="btn" type="submit" ng-disabled="form.$invalid" ng-click="neworder.status='close';neworder.repcheck=1">
-					<i class="icon-ban-circle bigger-110"></i>
-					关闭订单
-				</button>
+				<form class="form-horizontal" role="form" ng-submit="addIcCategory()">
 				
-				<button class="btn btn-info" type="submit" ng-disabled="form.$invalid" ng-click="neworder.status='ordered';neworder.repcheck=1">
-					<i class="icon-ok bigger-110"></i>
-					同意工厂回复并下单
-				</button>
-			</div>
-		</div>
-		
-		<div class="clearfix form-actions" ng-if="order.state=='ordered' && loggedUser.utype=='g2g'">
-			<div class="col-md-offset-3 col-md-9">
-				<button class="btn btn-info" type="submit" ng-disabled="form.$invalid" ng-click="neworder.status='complete';neworder.repcheck=1">
-					<i class="icon-ok bigger-110"></i>
-					确认入库
-				</button>
-			</div>
-		</div>
-			
-		</form>
-	</div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <i class="icon-asterisk red"></i>IC分类名称 </label>
+
+						<div class="col-sm-9">
+							<input required type="text" ng-model="ic.name" class="col-xs-10 col-sm-5" />
+						</div>
+					</div>
+	
+					
+					<div class="space-4"></div>
+
+					<div class="clearfix form-actions">
+						<div class="col-md-offset-3 col-md-9">
+							<button class="btn" type="reset">
+								<i class="icon-undo bigger-110"></i>
+								重置
+							</button>
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn btn-info" type="submit" ng-disabled="form.$invalid">
+								<i class="icon-ok bigger-110"></i>
+								提交
+							</button>
+						</div>
+					</div>	
+				</form>
+
+			</div><!-- /.col -->
+		</div><!-- /.row -->
 </div>
 <script type="text/javascript">
 			jQuery(function($) {

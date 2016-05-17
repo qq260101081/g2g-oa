@@ -49,6 +49,11 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return '{{%user}}';
     }
+
+    public function getRepertory()
+    {
+    	return $this->hasOne(Repertory::className(), ['id' => 'user_id']);
+    }
     
 	public function rules()
      {

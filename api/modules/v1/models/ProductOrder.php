@@ -26,7 +26,7 @@ class ProductOrder extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'product_orders';
+        return '{{%product_orders}}';
     }
 
     /**
@@ -35,8 +35,8 @@ class ProductOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_model','number','factory_zh_name','order_time','price'], 'required'],
-        	[['jet_coding','factory_zh_name','factory_en_name','lamp_bead_code','remark','progress'],'string'],
+            [['product_model','number','factory_name','factory_en_name','order_time','price','username','lamp_bead_code','ic','ic_number','lamp_number','lamp_wastage_rate'], 'required'],
+        	[['jet_coding','factory_name','lamp_bead_code','remark','progress'],'string'],
         	[['price'],'number'],
         	[['plan_delivery_time','order_time'], 'safe'],
         	['status', 'filter','filter'=>function ($value){if($value=='') return 'waitreply';return $value;}],

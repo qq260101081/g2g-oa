@@ -1,7 +1,7 @@
-<div class="page-content" ng-controller="UserListController">
+<div class="page-content" ng-controller="IcLogsController">
 						<div class="page-header">
 							<h1>
-								用户列表
+								IC使用明细
 							</h1>
 						</div><!-- /.page-header -->
 
@@ -21,42 +21,27 @@
 																<span class="lbl"></span>
 															</label>
 														</th>
-														<th>用户名</th>
-														
 														<th>	
-															账号类型
+															使用产品
 														</th>
 														<th>	
-															所属工厂
-														</th>
-														<th>	
-															电话
-														</th>
-														<th>	
-															手机
-														</th>
-														<th>	
-															邮箱
-														</th>
-														<th>	
-															状态
+															使用数量
 														</th>
 														
-														<th class="hidden-480">
-															<i class="icon-time bigger-110 hidden-480"></i>
-															创建时间
+														<th>	
+															使用人
 														</th>
 														<th class="hidden-480">
 															<i class="icon-time bigger-110 hidden-480"></i>
-															最后更新
+															使用时间
 														</th>
-														<th>操作</th>
+														
 													</tr>
 												</thead>
 
 												<tbody>
 												
-													<tr ng-repeat="v in users">
+													<tr ng-repeat="v in icShipping">
 														<td class="center">
 															<label>
 																<input type="checkbox" class="ace">
@@ -64,38 +49,20 @@
 															</label>
 														</td>
 
-														<td class="hidden-480">{{v.username}}</td>
 														<td>
-															<span ng-if="v.type=='factory'">工厂</span>
-															<span ng-if="v.type=='g2g'">G2G</span>
+															{{v.product_name}}
 														</td>
 														<td>
-															<span ng-if="factores[v.belong]">{{factores[v.belong]}}</span>
-															<span ng-if="!factores[v.belong]">G2G</span>
-															   
+															{{v.number}}  
 														</td>
+														
 														<td>
-															{{v.tel}}  
+															{{v.username}}
 														</td>
-														<td>
-															{{v.mobile}}
-														</td>
-														<td>
-															{{v.email}}
-														</td>
-														<td>
-															<span ng-if="v.status=='active'">启用中</span>
-															<span ng-if="v.status=='inactive'">已停用</span>
-														</td>
+														
 														<td>{{v.created_at*1000 | date:'yyyy-MM-dd'}}</td>
-														<td>
-															<span ng-if="v.updated_at">{{v.updated_at*1000 | date:'yyyy-MM-dd'}}</span>
-														</td>
-														<td>
-															<a ng-href="#userUpdate/{{v.id}}" class="btn btn-xs btn-info">
-																	<i class="icon-edit bigger-120"></i>
-															</a>
-														</td>
+														
+														
 													</tr>
 
 												</tbody>
@@ -107,7 +74,6 @@
 								<div class="row">
 								<tm-pagination conf="paginationConf"></tm-pagination>
 								</div>
-
 								
 							</div><!-- /.col -->
 						</div><!-- /.row -->

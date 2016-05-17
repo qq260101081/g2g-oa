@@ -2,14 +2,14 @@
 namespace api\modules\v1\controllers;
 use Yii;
 use api\controllers\BaseController;
-use api\modules\v1\models\Lampbead;
+use api\modules\v1\models\Ic;
 use api\modules\v1\models\User;
 use yii\filters\auth\HttpBasicAuth;
 use yii\data\ActiveDataProvider;
 
-class LampbeadController extends BaseController
+class IcController extends BaseController
 {
-	public $modelClass = 'api\modules\v1\models\Lampbead';
+	public $modelClass = 'api\modules\v1\models\Ic';
 	
 	
 	
@@ -20,15 +20,10 @@ class LampbeadController extends BaseController
 		return $actions;
 	}
 	
-	public function actionIndex($page=0, $pageSize=0, $where='')
+	public function actionIndex($page, $pageSize)
 	{
-		//获取有库存的灯珠
-		if($where=='repertory' && $page==0 && $page==0)
-		{
-			return Lampbead::find()->where(['>','remaining',0])->all();
-		}
 		return new ActiveDataProvider([
-				'query' => Lampbead::find()->orderBy('id desc'),
+				'query' => Ic::find()->orderBy('id desc'),
 				'pagination' => [
 						'pageSize' => $pageSize,
 				],
@@ -47,10 +42,8 @@ class LampbeadController extends BaseController
 	}
 	public function actionCreate()
 	{
-			
 		$model = new $this->modelClass;
 		$model->attributes = Yii::$app->request->post();
-		$model->order_no = 'G2G' . date('Ymd') . $model->attributes['order_no'];
 		$model->username = Yii::$app->user->identity->username;
 		$model->remaining = $model->attributes['number'];
 		$model->save();
@@ -72,7 +65,7 @@ class LampbeadController extends BaseController
 	/* function to find the requested record/model */
 	protected function findModel($id)
 	{
-		if (($model = Lampbead::findOne($id)) !== null) {
+		if (($model = Ic::findOne($id)) !== null) {
 			return $model;
 		} else {
 	

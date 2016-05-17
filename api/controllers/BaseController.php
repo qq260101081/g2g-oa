@@ -19,6 +19,7 @@ class BaseController extends ActiveController
 		$behaviors['corsFilter'] = [
 				'class' => \yii\filters\Cors::className(),
 				'cors' => [
+						
 						//'Origin' => ['http://baidu.com'],
 						//'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
 				]

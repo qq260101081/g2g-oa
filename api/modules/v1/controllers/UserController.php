@@ -4,6 +4,7 @@ namespace api\modules\v1\controllers;
 
 use \Yii;
 use \api\controllers\BaseController;
+use yii\data\ActiveDataProvider;
 
 class UserController extends BaseController
 {
@@ -31,11 +32,16 @@ class UserController extends BaseController
 	
 	
 	
-	public function actionIndex()
+	public function actionIndex($page, $pageSize)
 	{
-		$modelClass = $this->modelClass;
-		return $modelClass::find()->all();
-		
+		$modelClass = $this->modelClass;		
+		return new ActiveDataProvider([
+				'query' => $modelClass::find(),
+				'pagination' => [
+						'pageSize' => $pageSize,
+						],
+				]);
+				
 	}
 	
 	

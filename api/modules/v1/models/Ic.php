@@ -15,14 +15,14 @@ use \Yii;
  * @property integer $number
  * @property integer $created_at
  */
-class Lampbead extends \yii\db\ActiveRecord
+class Ic extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'lampbead';
+        return '{{%ic}}';
     }
 
     /**
@@ -31,9 +31,8 @@ class Lampbead extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_no','username','lampbead_model','factory_zh_name','factory_en_name'], 'required'],
-        	[['order_no','lampbead_model','factory_en_name','factory_zh_name','order_no'],'string'],
-        	[['created_at','number'],'number'],
+            [['number','ic_name','fatory_name','remaining','username'], 'required'],
+        	[['created_at','number','remaining'],'number'],
         	['created_at', 'default','value'=>time()],
         	
         ];

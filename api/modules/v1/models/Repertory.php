@@ -21,13 +21,21 @@ class Repertory extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+	
     public static function tableName()
     {
-        return 'product_repertory';
+        return '{{%product_repertory}}';
     }
     
-    
+    public function getUser()
+    {
+    	return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
 
+    public function attributes()
+    {
+    	return array_merge(parent::attributes(), ['user.username']);
+    }
     /**
      * @inheritdoc
      */

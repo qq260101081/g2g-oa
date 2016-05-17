@@ -5,6 +5,7 @@ use api\controllers\BaseController;
 use api\modules\v1\models\Repertory;
 use api\modules\v1\models\User;
 use yii\filters\auth\HttpBasicAuth;
+use yii\data\ActiveDataProvider;
 
 class RepertoryController extends BaseController
 {
@@ -19,16 +20,27 @@ class RepertoryController extends BaseController
 		return $actions;
 	}
 	
-	public function actionIndex()
+	public function actionIndex($page, $pageSize)
 	{
-		$model = Repertory::find()->asArray()->all();
+		$query = Repertory::find();
+		$dataProvider = new ActiveDataProvider([
+				'query' => $query->joinWith(['user'])->orderBy('id desc'),
+				'pagination' => [
+						'pageSize' => $pageSize,
+				],
+		]);
 		
-		foreach ($model as $k => $v)
+		$data = [];
+		
+		foreach ($dataProvider->models as $k => $v)
 		{
-			$model[$k]['username'] = User::findOne($v['user_id'])->username;
+			$data['data'][$k] = $v->attributes;
+			$data['data'][$k]['username'] = $v['user']['username'];
 		}
+		$data['pages']['total_count'] = $dataProvider->pagination->totalCount;
+		Yii::$app->response->data = $data;
 		
-		return $model;
+		return $data;
 	}
 	
 	

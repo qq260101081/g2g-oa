@@ -56,114 +56,123 @@ controllers.controller('LoginController', ['$scope','$http', '$window', '$locati
     }
 ]);
 
-controllers.controller('ProductOrderListController', [
-	'$scope','$http','$window', '$location',
-	function($scope, $http, $window, $location) {
-		$http.get(webRoot+'api/web/v1/productorder', $scope.order).success(
-        function (data) {
-           $scope.orders = data.data;
-           angular.forEach($scope.orders, function(v,k){
-        	   if(v.progress) 
-        	   {       		  
-        		  var arr = v.progress.split('-');
-        		  angular.forEach(arr, function(vv){
-        			  $scope.orders[k][vv] = vv;
-        		  });
-        	   }
-           });   
-           
-        }).error(
-            function (data) {
-            	console.log(data);
-                angular.forEach(data, function (error) {
-                    $scope.error[error.field] = error.message;
-                });
-            }
-        );
-		// update progress
-		$scope.productOrderProgress = function(id, progress){
-			angular.forEach($scope.orders, function (v,k) {
-				if(v.id == id && $scope.orders[k][progress] == undefined) 
-					$scope.orders[k][progress] = progress;
-				else
-					$scope.orders[k][progress] = '';
-            });
-			$http.put(webRoot+'api/web/v1/productorder/'+id, {'progress':progress}).success(
-		            function (data) {
-		            	$location.path('/productOrderList').replace();
-		            }).error(
-		                function (data) {
-		                	
-		                	
-		                    angular.forEach(data, function (error) {
-		                        $scope.error[error.field] = error.message;
-		                    });
-		                }
-		         );
-		}
-	}
-]);
+controllers.controller('ProductOrderListController', ['$scope', '$http','$location', 'BusinessService', function ($scope, $http, $location, BusinessService) {
 
-controllers.controller('ProductOrderAddController', [
-	'$scope','$http','$window', '$location',
-  	function($scope, $http, $window, $location) {
-		
-		$scope.fatores = [
-		    {id:'1', zh_name:"广州力侬照明技术有限公司", en_name:"LN"},
-		    {id:'2', zh_name:"深圳市美耐斯光电有限公司", en_name:"MY"},
-		    {id:'3', zh_name:"中山市泰然光电科技有限公司", en_name:"TP"},
-		    {id:'3', zh_name:"东莞市红富照明科技有限公司", en_name:"ST"}
-		];
-		    
-		$scope.productModel = [
-		    {id:'1', name:'AURORA I GENIV（LNMS5NW3ALE65G-CC12）'},
-			{id:'2', name:'AURORA R（LNMD5R4ALE65G-D12）'},
-			{id:'3', name:'AURORA MINI White（LNMS7W2F26-D12）'},
-			{id:'4', name:'G2G NOX White（LNMS7NW3ALE65G-D12-NOX）'},
-			{id:'5', name:'G2G SparX（LNMS8W4AON262H-CC12）'},
-			{id:'6', name:'G2G ArRay PRO 3.6W（LNMS8W6AON260I-CC12）'},
-			{id:'7', name:'G2G ArRay SF 1.0W（LNMS5NW3ALE65G-CC12）'},
-			{id:'8', name:'G2G TRIDENT DF'},
-			{id:'9', name:'G2G ArRay MINI 1.2W（LNMS5NW3ALE65G-CC12）'},
-			{id:'10', name:'AURORA EX（LNMS2W3N79-DC12）'},
-			{id:'11', name:'AURORA MINI Red（LNMS7R2F26-D12）'},
-			{id:'12', name:'G2G NOX Warm White（LNMS7WW3ALE65G-D13-NOX）'},
-			{id:'13', name:'G2G SparX GENII（LNMS5NW3ALE65G-CC12）'},
-			{id:'14', name:'G2G ArRay ECO 1.8W（LNMS5NW3ALE65G-CC12）'},
-			{id:'15', name:'AURORA SV'},
-			{id:'16', name:'SV Red'},
-			{id:'17', name:'G2G ArRay MINI 1.0W（LNMS5NW3ALE65G-CC12）'}
-		 ];
-		
-		$scope.factory_zh_name = '广州力侬照明技术有限公司';
-	    $scope.factory_en_name = 'LN';
-	    $scope.product_model   = 'AURORA I GENIV（LNMS5NW3ALE65G-CC12）';
-		$scope.selectFatory = function(obj) {
-		    $scope.factory_zh_name = obj.zh_name;
-		    $scope.factory_en_name = obj.en_name;
-		}
-		$scope.selectProductModel = function(obj) {
-		    $scope.product_model = obj.name;
-		}
-		
-		
-		$scope.addorder = function()
-		{
-			$scope.order.factory_zh_name = $scope.factory_zh_name;
-			$scope.order.factory_en_name = $scope.factory_en_name;
-			$scope.order.product_model = $scope.product_model;
-			
-			$http.post(webRoot+'api/web/v1/productorder', $scope.order).success(
+    var GetLists = function () {
+
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+
+        BusinessService.list(webRoot+'api/web/v1/productorder', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.orders = response.data;
+            angular.forEach(response.data, function(v,k){
+         	   if(v.progress) 
+         	   {       		  
+         		  var arr = v.progress.split('-');
+         		  angular.forEach(arr, function(vv){
+         			  $scope.orders[k][vv] = vv;
+         		  });
+         	   }
+            });   
+        });
+
+    }
+
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+
+    /***************************************************************
+    当页码和页面记录数发生变化时监控后台查询
+    如果把currentPage和itemsPerPage分开监控的话则会触发两次后台事件。 
+    ***************************************************************/
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    
+ // update progress
+	$scope.productOrderProgress = function(id, progress){
+		angular.forEach($scope.orders, function (v,k) {
+			if(v.id == id && $scope.orders[k][progress] == undefined) 
+				$scope.orders[k][progress] = progress;
+			else
+				$scope.orders[k][progress] = '';
+        });
+		$http.put(webRoot+'api/web/v1/productorder/'+id, {'progress':progress}).success(
 	            function (data) {
-	            	$location.path('/productOrderList');
+	            	$location.path('/productOrderList').replace();
 	            }).error(
 	                function (data) {
+	                	
 	                	
 	                    angular.forEach(data, function (error) {
 	                        $scope.error[error.field] = error.message;
 	                    });
 	                }
-	            );
+	         );
+	}
+}]);
+
+
+//业务类
+app.factory('BusinessService', ['$http', function ($http) {
+    var list = function (url, postData) {
+        return $http.get(url+'?page='+postData.pageIndex+'&pageSize='+postData.pageSize);
+    }
+
+    return {
+        list: function (url, postData) {
+            return list(url, postData);
+        }
+    }
+}]);
+
+controllers.controller('ProductOrderAddController', [
+	'$scope','$http','$window', '$location',
+  	function($scope, $http, $window, $location) {
+		$http.get(webRoot+'api/web/v1/factory').success(function(data){
+			$scope.fatores = data.data;
+		});
+		
+		$http.get(webRoot+'api/web/v1/product-model').success(function(data){
+			$scope.productModel = data.data;
+		});
+		
+		$http.get(webRoot+'api/web/v1/lampbead?page=0&pageSize=0&where=repertory').success(function(data){
+			$scope.lampbead = data.data;
+		});
+	   
+		$scope.selectFatory = function(factory_name) {
+		    $scope.factory_name = factory_name;
+		}
+		$scope.selectProductModel = function(product_name) {
+		    $scope.product_model = product_name;
+		}
+		$scope.selectLampbead = function(order_no) {
+		    $scope.lamp_bead_code = order_no;
+		}
+		
+		$scope.addorder = function()
+		{   
+			angular.forEach(this.fatores, function (v) {
+
+	            if(v.zh_name == $scope.factory_name) $scope.order.factory_en_name = v.en_name;
+	        });
+			
+			$http.post(webRoot+'api/web/v1/productorder', $scope.order).success(
+	            function (data) {
+	            	if(data.success)
+	            	{
+	            		$location.path('/productOrderList');
+	            	}
+	            	else
+	            	{
+	            		alert(data.message + ' 库存数量：'+data.number);
+	            	}
+	            });
 		}
 		
   	}
@@ -245,7 +254,6 @@ controllers.controller('LampbeadAddController', [
  		    {id:'1', zh_name:"源磊灯珠", en_name:"YL"},
  		    {id:'2', zh_name:"天电灯珠", en_name:"TD"},
  		    {id:'3', zh_name:"巴瑞德灯珠", en_name:"RD"},
- 		    {id:'3', zh_name:"英飞凌 ic", en_name:"YF"}
  		];
  		    
  		$scope.lampbeadModel = [
@@ -290,22 +298,27 @@ controllers.controller('LampbeadAddController', [
    	}
  ]);
 
-controllers.controller('LampbeadListController', [
-'$scope','$http','$window', '$location',
-function($scope, $http, $window, $location) {
-	$http.get(webRoot+'api/web/v1/lampbead', $scope.order).success(
-          function (data) {
-             $scope.orders = data.data;
-          }).error(
-              function (data) {
-              	console.log(data);
-                  angular.forEach(data, function (error) {
-                      $scope.error[error.field] = error.message;
-                  });
-              }
-          );
+controllers.controller('LampbeadListController', ['$scope','$http','$window', '$location', 'BusinessService',function($scope, $http, $window, $location, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/lampbead', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.lamps = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+
   	}
   ]);
+
 
 controllers.controller('LampbeadDetailController', [
 '$scope','$http','$window', '$location', '$routeParams',
@@ -314,7 +327,6 @@ function($scope, $http, $window, $location, $routeParams) {
 	$http.get(webRoot+'api/web/v1/lampbead/'+$routeParams.id).success(
       function (data) {
          $scope.order = data.data;
-         console.log($scope.order);
       }).error(
           function (data) {
           	console.log(data);
@@ -325,21 +337,125 @@ function($scope, $http, $window, $location, $routeParams) {
       );
 }]);
 
+controllers.controller('LampbeadShippingListController', ['$scope','$http','$window', '$location', 'BusinessService',function($scope, $http, $window, $location, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/lampbeadShipping', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.lamps = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+
+  	}
+  ]);
+
+controllers.controller('IcListController', ['$scope','$http','$window', '$location', 'BusinessService',function($scope, $http, $window, $location, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/ic', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.ic = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+
+  	}
+  ]);
+
+controllers.controller('IcAddController', [
+  	'$scope','$http','$window', '$location',
+    	function($scope, $http, $window, $location) {
+  		
+	  		$scope.ic = {ic_name:"BCR450",fatory_name:"英飞凌 ic"};  		
+	  		
+	  		$scope.addIc = function()
+	  		{
+	  			$http.post(webRoot+'api/web/v1/ic', $scope.ic).success(
+	  	        function (data) {
+	  	            	$location.path('/icList');
+	  	        });
+	  		}
+    	}
+  ]);
+
+controllers.controller('IcCategoryListController', ['$scope','$route','$http','$window', '$location', 'BusinessService',function($scope,$route, $http, $window, $location, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/ic-category', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.icCategory = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    $scope.deleteCategory = function(id){
+		$http.delete(webRoot+'api/web/v1/ic-category/'+id).success(
+		        function (data) {
+		            	$location.path('/icCategoryList');
+		            	$route.reload();
+		        });
+	}
+  	}
+  ]);
+
+controllers.controller('IcCategoryAddController', [
+ 	'$scope','$http','$window', '$location',
+   	function($scope, $http, $window, $location) {
+  		$scope.addIcCategory = function()
+  		{
+  			$http.post(webRoot+'api/web/v1/ic-category', $scope.ic).success(
+  	        function (data) {
+  	            	$location.path('/icCategoryList');
+  	        });
+  		}
+   	}
+ ]);
+
+
 controllers.controller('RepertoryListController', [
-'$scope','$http','$window', '$location', '$routeParams',
-function($scope, $http, $window, $location, $routeParams) {
-	
-	$http.get(webRoot+'api/web/v1/repertory').success(
-      function (data) {
-         $scope.repertory = data.data;
-      }).error(
-          function (data) {
-          	console.log(data);
-              angular.forEach(data, function (error) {
-                  $scope.error[error.field] = error.message;
-              });
-          }
-      );
+'$scope','$http','$window', '$location', '$routeParams','BusinessService',
+function($scope, $http, $window, $location, $routeParams, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/repertory', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.data.pages['total_count'];
+            $scope.repertory = response.data.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    
 }]);
 
 controllers.controller('ShippingAddController', [
@@ -400,22 +516,26 @@ function($scope, $http, $window, $location, $routeParams) {
 }]);
 
 controllers.controller('ShippingListController', [
-'$scope','$http','$window', '$location', '$routeParams',
-function($scope, $http, $window, $location, $routeParams) {
-	
-	$http.get(webRoot+'api/web/v1/shipping').success(
-      function (data) {
-         $scope.shipping = data.data;
-      }).error(
-          function (data) {
-          	console.log(data);
-              angular.forEach(data, function (error) {
-                  $scope.error[error.field] = error.message;
-              });
-          }
-      );
-	
-	$scope.changeStatus = function(id, check){
+'$scope','$http','$window', '$location', '$routeParams','BusinessService',
+function($scope, $http, $window, $location, $routeParams, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/shipping', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.data.pages['total_count'];
+            $scope.shipping = response.data.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    //出货确认
+    $scope.changeStatus = function(id, check){
 		$http.put(webRoot+'api/web/v1/shipping/'+id, {status:check}).success(
             function (data) {
             	$location.path('/shippingList');
@@ -428,7 +548,54 @@ function($scope, $http, $window, $location, $routeParams) {
                 }
          );
 	}
+    
 }]);
+
+controllers.controller('ProductModelListController', ['$scope','$route','$http','$window', '$location', 'BusinessService',function($scope,$route, $http, $window, $location, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/product-model', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.pmodel = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    $scope.deleteProductModel = function(id){
+		$http.delete(webRoot+'api/web/v1/product-model/'+id).success(
+        function (data) {
+            	$location.path('/productModelList');
+            	$route.reload();
+        });
+	}
+  	}
+  ]);
+
+controllers.controller('ProductModelAddController', [
+	'$scope','$http','$window', '$location',
+  	function($scope, $http, $window, $location) {
+		$http.get(webRoot+'api/web/v1/ic-category').success(function (response) {
+            $scope.ics = response.data;
+        });
+		$scope.selectIc = function(ic_name){
+			$scope.pmodel.ic = ic_name;
+		}
+ 		$scope.addProductModel = function()
+ 		{
+ 			$http.post(webRoot+'api/web/v1/product-model', $scope.pmodel).success(
+ 	        function (data) {
+ 	            $location.path('/productModelList');
+ 	        });
+ 		}
+  	}
+]);
 
 controllers.controller('UserUpdateController', [
 '$scope','$http','$window', '$location', '$routeParams',
@@ -462,26 +629,26 @@ function($scope, $http, $window, $location, $routeParams) {
 }]);
 
 controllers.controller('UserListController', [
-'$scope','$http','$window', '$location', '$routeParams',
-function($scope, $http, $window, $location, $routeParams) {
-	$http.get(webRoot+'api/web/v1/user').success(
-      function (data) {
-         $scope.users = data.data;
-         $scope.factores = {};
-         $http.get(webRoot+'api/web/v1/factory').success(
-	      function (factory) {
-	    	 angular.forEach(factory.data, function (v) {
-	    		 $scope.factores[v.en_name] = v.zh_name;
-             });
-	      });
-      }).error(
-          function (data) {
-          	console.log(data);
-              angular.forEach(data, function (error) {
-                  $scope.error[error.field] = error.message;
-              });
-          }
-      );
+'$scope','$http','$window', '$location', '$routeParams','BusinessService',
+function($scope, $http, $window, $location, $routeParams,BusinessService) {
+	
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/user', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.users = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    
 }]);
 
 controllers.controller('UserAddController', [
@@ -518,3 +685,50 @@ function($scope, $http, $window, $location, $routeParams) {
 	}
 	
 }]);
+
+controllers.controller('LampbeadShippingListController', [
+'$scope','$http','$window', '$location', '$routeParams','BusinessService',
+function($scope, $http, $window, $location, $routeParams,BusinessService) {
+	
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/lampbead-shipping', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.lampShipping = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    
+}]);
+controllers.controller('IcLogsController', [
+'$scope','$http','$window', '$location', '$routeParams','BusinessService',
+function($scope, $http, $window, $location, $routeParams,BusinessService) {
+	
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/ic-logs', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.icShipping = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    
+}]);
+
+

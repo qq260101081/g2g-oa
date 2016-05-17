@@ -24,7 +24,17 @@ return [
 	        'rules' => [
 	            [
 	                'class' => 'yii\rest\UrlRule', 
-	                'controller' => ['v1/user','v1/productorder','v1/factory','v1/lampbead','v1/repertory','v1/shipping'], 
+	                'controller' => [
+	                		'v1/user',
+	                		'v1/productorder',
+	                		'v1/factory',
+	                		'v1/lampbead',
+	                		'v1/repertory',
+	                		'v1/shipping',
+	                		'v1/ic',
+	                		'v1/ic-category',
+	                		'v1/product-model',
+	                ], 
 	                'pluralize'=>false	
 	            ],
 	        ],
@@ -35,11 +45,13 @@ return [
     				
     		'on beforeSend' => function ($event) {
     			$response = $event->sender;
+    			//print_r($response->getHeaders());
     			$response->getHeaders()->remove('www-authenticate'); // THIS
 		        $response->formatters['html'] = 'yii\web\JsonResponseFormatter';
 		        $response->data = [
 		            'success' => $response->isSuccessful,
 		            'data'    => $response->data,
+		        	'pages'   => $response->headers
 		        ];
     			$response->statusCode = 200;
     		},
