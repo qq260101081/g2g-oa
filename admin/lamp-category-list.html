@@ -1,8 +1,10 @@
-<div class="page-content" ng-controller="IcLogsController">
+<div class="page-content" ng-controller="LampCategoryListController">
 						<div class="page-header">
-							<h1>
-								IC使用明细
+							<h1 class="pull-left">
+								灯珠分类
 							</h1>
+							<a class="pull-right" ng-href="#lampCategoryAdd">添加分类</a>
+							<br>
 						</div><!-- /.page-header -->
 
 						<div class="row">
@@ -21,53 +23,29 @@
 																<span class="lbl"></span>
 															</label>
 														</th>
-														<th>	
-															使用IC
-														</th>
-														<th>	
-															使用产品
-														</th>
-														<th>	
-															使用数量
-														</th>
-														
-														<th>	
-															使用人
-														</th>
-														<th class="hidden-480">
-															<i class="icon-time bigger-110 hidden-480"></i>
-															使用时间
-														</th>
-														
+														<th>ID</th>
+														<th>灯珠代号</th>
+														<th>操作</th>
 													</tr>
 												</thead>
 
 												<tbody>
 												
-													<tr ng-repeat="v in icShipping">
+													<tr ng-repeat="v in lampCategory">
 														<td class="center">
 															<label>
 																<input type="checkbox" class="ace">
 																<span class="lbl"></span>
 															</label>
 														</td>
+
+														<td>{{v.id}}</td>
+														<td>{{v.lamp_code}}</td>
 														<td>
-															{{v.ic}}
+															<button class="btn btn-xs btn-danger" ng-click="deleteCategory(v.id)">
+																<i class="icon-trash bigger-110"></i>
+															</button>
 														</td>
-														<td>
-															{{v.product_name}}
-														</td>
-														<td>
-															{{v.number}}  
-														</td>
-														
-														<td>
-															{{v.username}}
-														</td>
-														
-														<td>{{v.created_at*1000 | date:'yyyy-MM-dd'}}</td>
-														
-														
 													</tr>
 
 												</tbody>
@@ -79,6 +57,7 @@
 								<div class="row">
 								<tm-pagination conf="paginationConf"></tm-pagination>
 								</div>
+
 								
 							</div><!-- /.col -->
 						</div><!-- /.row -->

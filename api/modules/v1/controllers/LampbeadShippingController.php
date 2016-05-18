@@ -6,10 +6,11 @@ use api\modules\v1\models\LampbeadShipping;
 use api\modules\v1\models\User;
 use yii\filters\auth\HttpBasicAuth;
 use yii\data\ActiveDataProvider;
+use api\modules\v1\models\Lampbead;
 
 class LampbeadShippingController extends BaseController
 {
-	public $modelClass = 'api\modules\v1\models\Lampbead';
+	public $modelClass = 'api\modules\v1\models\LampbeadShipping';
 	
 	
 	
@@ -41,13 +42,18 @@ class LampbeadShippingController extends BaseController
 		return $data;
 	}
 	public function actionCreate()
-	{
-			
+	{	
 		$model = new $this->modelClass;
+		$lampbead = Lampbead::find()->where(['order_no' => Yii::$app->request->post()['lamp_order_no']])->one();
+		if($lampbead->remaining < Yii::$app->request->post()['number'])
+		{
+			echo json_encode(array('status'=>false,'error_code'=>400,'number'=>$lampbead->remaining,'message'=>'灯珠库存不足'),JSON_PRETTY_PRINT);
+			exit;
+		}
+		$lampbead->remaining -= Yii::$app->request->post()['number'];
 		$model->attributes = Yii::$app->request->post();
-		$model->order_no = 'G2G' . date('Ymd') . $model->attributes['order_no'] . '(' . $model->attributes['factory_en_name'] . ')';
-		$model->user_id = Yii::$app->user->identity->id;
-		$model->save();
+		$model->username = Yii::$app->user->identity->username;
+		if($lampbead->save()) $model->save();
 	}
 	
 	public function actionUpdate($id)

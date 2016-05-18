@@ -181,6 +181,7 @@ class ProductorderController extends BaseController
 							$icModel->username = Yii::$app->user->identity->username;
 							$icModel->product_name = $model->product_model;
 							$icModel->number = $model->ic_number;
+							$icModel->ic = $model->ic;
 							$icModel->save();
 						}
 					}

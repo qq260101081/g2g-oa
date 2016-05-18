@@ -24,7 +24,7 @@
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"><i class="icon-asterisk red"></i> 所用IC </label>
 						<div class="col-sm-9">
-						<select required ng-options="ic.name as ic.name for ic in ics" ng-model="ic.name" ng-change="selectIc(ic.name)" class="col-xs-10 col-sm-5">
+						<select required ng-options="ic.name as ic.name for ic in ics" ng-model="pmodel.name" ng-change="selectIc(pmodel.name)" class="col-xs-10 col-sm-5">
       						<option value="" selected>--请选择IC--</option>
       					</select>
 						</div>

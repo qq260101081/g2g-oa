@@ -22,8 +22,6 @@
 															</label>
 														</th>
 														<th>订单编号</th>
-														<th>生产工厂</th>
-														<th>灯珠型号</th>
 														<th class="hidden-480">
 															<i class="icon-time bigger-110 hidden-480"></i>
 															创建时间
@@ -45,8 +43,6 @@
 														</td>
 
 														<td>{{v.order_no}}</td>
-														<td>{{v.factory_zh_name}}</td>
-														<td class="hidden-480">{{v.lampbead_model}}</td>
 														<td>{{v.created_at*1000 | date:'yyyy-MM-dd'}}</td>
 														<td>
 															{{v.remaining}}
@@ -55,8 +51,9 @@
 														<td>
 															<div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
 															
-																<a class="btn btn-xs btn-info" ng-href="#lampbeadDetail/{{v.id}}">
-																	<i class="icon-eye-open bigger-120"></i>
+																<a class="btn btn-xs btn-info" ng-href="#lampbeadTest/{{v.id}}/{{v.order_no}}">
+																	<i class="icon-beaker bigger-120"></i>
+																	实验
 																</a>
 																
 															</div>

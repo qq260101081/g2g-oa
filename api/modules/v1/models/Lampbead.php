@@ -31,8 +31,8 @@ class Lampbead extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_no','username','lampbead_model','factory_zh_name','factory_en_name'], 'required'],
-        	[['order_no','lampbead_model','factory_en_name','factory_zh_name','order_no'],'string'],
+            [['order_no','username','remaining'], 'required'],
+        	[['order_no'],'string'],
         	[['created_at','number'],'number'],
         	['created_at', 'default','value'=>time()],
         	

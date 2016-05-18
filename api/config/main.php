@@ -31,6 +31,8 @@ return [
 	                		'v1/lampbead',
 	                		'v1/repertory',
 	                		'v1/shipping',
+	                		'v1/lampbead-shipping',
+	                		'v1/lampbead-category',
 	                		'v1/ic',
 	                		'v1/ic-category',
 	                		'v1/product-model',

@@ -37,6 +37,14 @@ app.config(['$routeProvider', '$httpProvider',
             	templateUrl: 'ic-category-add.html',
             	controller: 'IcCategoryAddController'
             }).
+            when('/lampCategoryList', {
+            	templateUrl: 'lamp-category-list.html',
+            	controller: 'LampCategoryListController'
+            }).
+            when('/lampCategoryAdd', {
+            	templateUrl: 'lamp-category-add.html',
+            	controller: 'LampCategoryAddController'
+            }).
             when('/lampbeadList', {
             	templateUrl: 'lampbead-list.html',
             	controller: 'LampbeadListController'
@@ -44,6 +52,10 @@ app.config(['$routeProvider', '$httpProvider',
             when('/lampbeadDetail/:id', {
             	templateUrl: 'lampbead-detail.html',
             	controller: 'LampbeadDetailController'
+            }).
+            when('/lampbeadTest/:id/:order_no', {
+            	templateUrl: 'lampbead-test.html',
+            	controller: 'LampbeadTestController'
             }).
             when('/lampbeadAdd', {
             	templateUrl: 'lampbead-add.html',

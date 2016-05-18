@@ -1,16 +1,14 @@
 <?php
 namespace api\modules\v1\controllers;
+
 use Yii;
 use api\controllers\BaseController;
-use api\modules\v1\models\IcCategory;
-use api\modules\v1\models\User;
-use yii\filters\auth\HttpBasicAuth;
 use yii\data\ActiveDataProvider;
-use api\modules\v1\models\Ic;
+use api\modules\v1\models\LampbeadCategory;
 
-class IcCategoryController extends BaseController
+class LampbeadCategoryController extends BaseController
 {
-	public $modelClass = 'api\modules\v1\models\IcCategory';
+	public $modelClass = 'api\modules\v1\models\LampbeadCategory';
 	
 	public function actions()
 	{
@@ -21,23 +19,15 @@ class IcCategoryController extends BaseController
 	
 	public function actionIndex($page=0, $pageSize=0)
 	{
+		$model = $this->modelClass;
 		if(!$page || !$pageSize)
 		{
-			$ics = IcCategory::find()->all();
-			/*foreach ($ics as $k=>$v)
-			{
-				$ic = Ic::find()->where(['ic_name'=>$v->name])->all();
-				if($ic)
-					$ics[$k]['number'] = $ic->remaining;
-				else 
-					$ics[$k]['number'] = 0;
-			}*/
-			return $ics;
+			return $model::find()->all();
 		}
 		else 
 		{
 			return new ActiveDataProvider([
-					'query' => IcCategory::find()->orderBy('id desc'),
+					'query' => $model::find()->orderBy('id desc'),
 					'pagination' => [
 							'pageSize' => $pageSize,
 					],
@@ -78,7 +68,7 @@ class IcCategoryController extends BaseController
 	/* function to find the requested record/model */
 	protected function findModel($id)
 	{
-		if (($model = IcCategory::findOne($id)) !== null) {
+		if (($model = LampbeadCategory::findOne($id)) !== null) {
 			return $model;
 		} else {
 	

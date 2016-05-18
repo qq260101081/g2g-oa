@@ -15,15 +15,17 @@ use \Yii;
  * @property integer $number
  * @property integer $created_at
  */
-class LampbeadShipping extends \yii\db\ActiveRecord
+class LampbeadCategory extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%lampbead_shipping_logs}}';
+        return '{{%lampbead_category}}';
     }
+    
+   
 
     /**
      * @inheritdoc
@@ -31,11 +33,7 @@ class LampbeadShipping extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lamp_order_no','username','number'], 'required'],
-        	[['product_name','description','remark'],'string'],
-        	[['created_at','number'],'number'],
-        	['created_at', 'default','value'=>time()],
-        	
+            [['lamp_code'], 'required'], 	
         ];
     }
 

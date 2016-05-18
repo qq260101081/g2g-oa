@@ -249,40 +249,12 @@ function($scope, $http, $window, $location, $routeParams) {
 controllers.controller('LampbeadAddController', [
  	'$scope','$http','$window', '$location',
    	function($scope, $http, $window, $location) {
- 		
- 		$scope.fatores = [
- 		    {id:'1', zh_name:"源磊灯珠", en_name:"YL"},
- 		    {id:'2', zh_name:"天电灯珠", en_name:"TD"},
- 		    {id:'3', zh_name:"巴瑞德灯珠", en_name:"RD"},
- 		];
- 		    
- 		$scope.lampbeadModel = [
- 		    {id:'1', name:'2835 -0.2W-3V三安芯片 10*30'},
- 			{id:'2', name:'T28351-SR-R39A-G0-IS 2.0V-2.2V三安芯片 14mil'},
- 			{id:'3', name:'3030 -1W-3V三安芯片17*34Mil双并'},
- 			{id:'4', name:'9V-3030  芯片尺寸：32BB,9V高压'},
- 			{id:'5', name:'3014 -0.2W三安芯片10*30Mil（25-27LM)'},
- 			{id:'6', name:'BCR450'},	
- 		 ];
- 		
- 		$scope.factory_zh_name = '源磊灯珠';
- 	    $scope.factory_en_name = 'YL';
- 	    $scope.lampbead_model  = '2835 -0.2W-3V三安芯片 10*30';
- 		$scope.selectFatory = function(obj) {
- 		    $scope.factory_zh_name = obj.zh_name;
- 		    $scope.factory_en_name = obj.en_name;
- 		}
- 		$scope.selectLampbeadModel = function(obj) {
- 		    $scope.lampbead_model = obj.name;
- 		}
- 		
- 		
+ 		$http.get(webRoot+'api/web/v1/lampbead-category').success(function(data){
+			$scope.category = data.data;
+		});
  		$scope.addLampbead = function()
  		{
- 			$scope.order.factory_zh_name = $scope.factory_zh_name;
- 			$scope.order.factory_en_name = $scope.factory_en_name;
- 			$scope.order.lampbead_model = $scope.lampbead_model;
- 			$http.post(webRoot+'api/web/v1/lampbead', $scope.order).success(
+ 			$http.post(webRoot+'api/web/v1/lampbead', $scope.lamp).success(
  	            function (data) {
  	            	$location.path('/lampbeadList');
  	            }).error(
@@ -295,6 +267,46 @@ controllers.controller('LampbeadAddController', [
  	            );
  		}
  		
+   	}
+ ]);
+
+controllers.controller('LampCategoryListController', ['$scope','$route','$http','$window', '$location', 'BusinessService',function($scope,$route, $http, $window, $location, BusinessService) {
+	var GetLists = function () {
+        var postData = {
+            pageIndex: $scope.paginationConf.currentPage,
+            pageSize: $scope.paginationConf.itemsPerPage
+        }
+        BusinessService.list(webRoot+'api/web/v1/lampbead-category', postData).success(function (response) {
+            $scope.paginationConf.totalItems = response.pages['x-pagination-total-count'][0];
+            $scope.lampCategory = response.data;
+        });
+    };
+    //配置分页基本参数
+    $scope.paginationConf = {
+        currentPage: 1,
+        itemsPerPage: 5
+    };
+    $scope.$watch('paginationConf.currentPage + paginationConf.itemsPerPage', GetLists);
+    $scope.deleteCategory = function(id){
+		$http.delete(webRoot+'api/web/v1/lampbead-category/'+id).success(
+		        function (data) {
+		            	$location.path('/lampCategoryList');
+		            	$route.reload();
+		        });
+	}
+  	}
+  ]);
+
+controllers.controller('LampCategoryAddController', [
+ 	'$scope','$http','$window', '$location',
+   	function($scope, $http, $window, $location) {
+  		$scope.addLampCategory = function()
+  		{
+  			$http.post(webRoot+'api/web/v1/lampbead-category', $scope.lamp).success(
+  	        function (data) {
+  	            	$location.path('/lampCategoryList');
+  	        });
+  		}
    	}
  ]);
 
@@ -319,6 +331,29 @@ controllers.controller('LampbeadListController', ['$scope','$http','$window', '$
   	}
   ]);
 
+controllers.controller('LampbeadTestController', [
+'$scope','$http','$window', '$location', '$routeParams',
+function($scope, $http, $window, $location, $routeParams) {
+	$scope.order = {};
+	$scope.order.lamp_order_no = $routeParams.order_no;
+	$scope.order.remark = '实验';
+	$scope.testLampbead = function()
+		{
+			$http.post(webRoot+'api/web/v1/lampbead-shipping', $scope.order).success(
+	        function (data) {
+	        	if(data.success == true) 
+		    	  {
+	        		$location.path('/lampbeadShippingList');
+		    	  }
+		    	  else
+		    	  {
+		    		  alert(data.message + ' 库存数量:' + data.number);
+		    	  }
+	            
+	        });
+		}
+  	}
+]);
 
 controllers.controller('LampbeadDetailController', [
 '$scope','$http','$window', '$location', '$routeParams',
@@ -382,8 +417,9 @@ controllers.controller('IcListController', ['$scope','$http','$window', '$locati
 controllers.controller('IcAddController', [
   	'$scope','$http','$window', '$location',
     	function($scope, $http, $window, $location) {
-  		
-	  		$scope.ic = {ic_name:"BCR450",fatory_name:"英飞凌 ic"};  		
+  			$http.get(webRoot+'api/web/v1/ic-category').success(function (data) {
+  				$scope.category = data.data;
+	  	    });  		
 	  		
 	  		$scope.addIc = function()
 	  		{
@@ -583,8 +619,10 @@ controllers.controller('ProductModelAddController', [
   	function($scope, $http, $window, $location) {
 		$http.get(webRoot+'api/web/v1/ic-category').success(function (response) {
             $scope.ics = response.data;
+            
         });
 		$scope.selectIc = function(ic_name){
+			
 			$scope.pmodel.ic = ic_name;
 		}
  		$scope.addProductModel = function()

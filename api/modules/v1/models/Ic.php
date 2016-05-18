@@ -31,7 +31,7 @@ class Ic extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number','ic_name','fatory_name','remaining','username'], 'required'],
+            [['number','ic_name','remaining','username'], 'required'],
         	[['created_at','number','remaining'],'number'],
         	['created_at', 'default','value'=>time()],
         	

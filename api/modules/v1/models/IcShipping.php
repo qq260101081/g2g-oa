@@ -31,7 +31,7 @@ class IcShipping extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username','product_name','number'], 'required'],
+            [['username','product_name','number','ic'], 'required'],
         	[['created_at','number'],'number'],
         	['created_at', 'default','value'=>time()],
         	
